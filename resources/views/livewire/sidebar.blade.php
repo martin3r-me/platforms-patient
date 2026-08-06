@@ -16,6 +16,10 @@
             @svg('heroicon-o-identification', 'w-4 h-4 text-[var(--nx-text)]')
             <span class="ml-2 text-sm">Patienten</span>
         </x-ui-sidebar-item>
+        <x-ui-sidebar-item :href="route('patient.settings')">
+            @svg('heroicon-o-cog-6-tooth', 'w-4 h-4 text-[var(--nx-text)]')
+            <span class="ml-2 text-sm">Einstellungen</span>
+        </x-ui-sidebar-item>
     </x-ui-sidebar-list>
 
     @if($patients->isNotEmpty())

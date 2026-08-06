@@ -35,36 +35,11 @@
                     <x-nx-input-text name="form.birth_name" label="Geburtsname" wire:model="form.birth_name" />
                     <x-nx-input-date name="form.birth_date" label="Geburtsdatum" wire:model="form.birth_date" />
                     <x-nx-input-text name="form.birth_place" label="Geburtsort" wire:model="form.birth_place" />
-                    <x-nx-input-select name="form.gender" label="Geschlecht" wire:model="form.gender">
-                        <option value="">—</option>
-                        @foreach($lookups['gender'] as $opt)
-                            <option value="{{ $opt }}">{{ $opt }}</option>
-                        @endforeach
-                    </x-nx-input-select>
-                    <x-nx-input-select name="form.nationality" label="Nationalität" wire:model="form.nationality">
-                        <option value="">—</option>
-                        @foreach($lookups['nationality'] as $opt)
-                            <option value="{{ $opt }}">{{ $opt }}</option>
-                        @endforeach
-                    </x-nx-input-select>
-                    <x-nx-input-select name="form.marital_status" label="Familienstand" wire:model="form.marital_status">
-                        <option value="">—</option>
-                        @foreach($lookups['marital_status'] as $opt)
-                            <option value="{{ $opt }}">{{ $opt }}</option>
-                        @endforeach
-                    </x-nx-input-select>
-                    <x-nx-input-select name="form.language" label="Sprache" wire:model="form.language">
-                        <option value="">—</option>
-                        @foreach($lookups['language'] as $opt)
-                            <option value="{{ $opt }}">{{ $opt }}</option>
-                        @endforeach
-                    </x-nx-input-select>
-                    <x-nx-input-select name="form.country" label="Land" wire:model="form.country">
-                        <option value="">—</option>
-                        @foreach($lookups['country'] as $opt)
-                            <option value="{{ $opt }}">{{ $opt }}</option>
-                        @endforeach
-                    </x-nx-input-select>
+                    <x-nx-input-select name="form.gender" label="Geschlecht" wire:model="form.gender" :options="$lookups['gender']" nullable nullLabel="—" />
+                    <x-nx-input-select name="form.nationality" label="Nationalität" wire:model="form.nationality" :options="$lookups['nationality']" nullable nullLabel="—" />
+                    <x-nx-input-select name="form.marital_status" label="Familienstand" wire:model="form.marital_status" :options="$lookups['marital_status']" nullable nullLabel="—" />
+                    <x-nx-input-select name="form.language" label="Sprache" wire:model="form.language" :options="$lookups['language']" nullable nullLabel="—" />
+                    <x-nx-input-select name="form.country" label="Land" wire:model="form.country" :options="$lookups['country']" nullable nullLabel="—" />
                     <x-nx-input-date name="form.deceased_at" label="Verstorben am" wire:model="form.deceased_at" />
                 </div>
             </x-nx-card>
@@ -99,12 +74,7 @@
         <x-nx-section icon="heroicon-o-identification" title="Versicherung & Kennungen">
             <x-nx-card>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <x-nx-input-select name="form.health_insurance" label="Krankenkasse" wire:model="form.health_insurance">
-                        <option value="">—</option>
-                        @foreach($lookups['health_insurance'] as $opt)
-                            <option value="{{ $opt }}">{{ $opt }}</option>
-                        @endforeach
-                    </x-nx-input-select>
+                    <x-nx-input-select name="form.health_insurance" label="Krankenkasse" wire:model="form.health_insurance" :options="$lookups['health_insurance']" nullable nullLabel="—" />
                     <x-nx-input-text name="form.social_security_number" label="Sozialversicherungs-Nr" wire:model="form.social_security_number" />
                     <x-nx-input-text name="form.lab_number" label="Labor-Nr" wire:model="form.lab_number" />
                     <x-nx-input-text name="form.lab_number_external" label="Labor-Nr (extern)" wire:model="form.lab_number_external" />
@@ -117,18 +87,8 @@
         <x-nx-section icon="heroicon-o-hand-raised" title="Schwerbehinderung">
             <x-nx-card>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <x-nx-input-select name="form.disability_degree" label="GdB" wire:model="form.disability_degree">
-                        <option value="">—</option>
-                        @foreach($gdbSteps as $step)
-                            <option value="{{ $step }}">{{ $step }}</option>
-                        @endforeach
-                    </x-nx-input-select>
-                    <x-nx-input-select name="form.reduced_earning_capacity" label="MdE" wire:model="form.reduced_earning_capacity">
-                        <option value="">—</option>
-                        @foreach($gdbSteps as $step)
-                            <option value="{{ $step }}">{{ $step }}</option>
-                        @endforeach
-                    </x-nx-input-select>
+                    <x-nx-input-select name="form.disability_degree" label="GdB" wire:model="form.disability_degree" :options="$gdbSteps" nullable nullLabel="—" />
+                    <x-nx-input-select name="form.reduced_earning_capacity" label="MdE" wire:model="form.reduced_earning_capacity" :options="$gdbSteps" nullable nullLabel="—" />
                     <x-nx-input-checkbox name="form.equal_status" label="Gleichstellung" wire:model="form.equal_status" />
                 </div>
             </x-nx-card>
