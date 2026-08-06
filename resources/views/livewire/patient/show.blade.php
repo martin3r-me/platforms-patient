@@ -63,27 +63,101 @@
             </x-nx-card>
         </x-nx-section>
 
-        {{-- Kontakt --}}
-        <x-nx-section icon="heroicon-o-phone" title="Kontakt">
-            <x-nx-card>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <x-nx-input-text name="form.phone" label="Telefon" wire:model="form.phone" />
-                    <x-nx-input-text name="form.phone_private" label="Telefon (privat)" wire:model="form.phone_private" />
-                    <x-nx-input-text name="form.mobile" label="Mobil" wire:model="form.mobile" />
-                    <x-nx-input-text name="form.fax" label="Fax" wire:model="form.fax" />
-                    <x-nx-input-text name="form.email_work" label="E-Mail (beruflich)" wire:model="form.email_work" />
-                    <x-nx-input-text name="form.email_private" label="E-Mail (privat)" wire:model="form.email_private" />
+        {{-- Telefon (typisierte Mehrfach-Werte) --}}
+        <x-nx-section icon="heroicon-o-phone" title="Telefon" :hint="$phoneNumbers->count()">
+            <x-nx-card flush>
+                <div class="divide-y divide-[color:var(--nx-line)]">
+                    @foreach($phoneNumbers as $phone)
+                        <div class="flex items-center gap-3 px-4 py-2.5" wire:key="phone-{{ $phone->id }}">
+                            <button type="button" wire:click="setPrimaryPhone({{ $phone->id }})" title="Als primär markieren"
+                                    class="shrink-0 {{ $phone->is_primary ? 'text-[color:var(--nx-accent)]' : 'text-[color:var(--nx-faint)] hover:text-[color:var(--nx-muted)]' }}">
+                                @svg($phone->is_primary ? 'heroicon-s-star' : 'heroicon-o-star', 'w-4 h-4')
+                            </button>
+                            <span class="w-28 shrink-0 text-xs text-[color:var(--nx-muted)]">{{ $phone->phone_type ?? '—' }}</span>
+                            <span class="flex-1 text-sm text-[color:var(--nx-text)]">{{ $phone->number }}</span>
+                            <button type="button" wire:click="removePhone({{ $phone->id }})" wire:confirm="Nummer entfernen?"
+                                    class="shrink-0 text-[color:var(--nx-faint)] hover:text-[color:var(--nx-danger)]">
+                                @svg('heroicon-o-trash', 'w-4 h-4')
+                            </button>
+                        </div>
+                    @endforeach
+                    <div class="flex items-end gap-2 px-4 py-3 bg-[color:var(--nx-bg)]">
+                        <div class="w-32 shrink-0">
+                            <x-nx-input-select name="newPhone.phone_type" label="Typ" wire:model="newPhone.phone_type" :options="$phoneTypeOptions" nullable nullLabel="—" />
+                        </div>
+                        <div class="flex-1">
+                            <x-nx-input-text name="newPhone.number" label="Nummer" wire:model="newPhone.number" wire:keydown.enter="addPhone" />
+                        </div>
+                        <x-nx-button variant="secondary" size="sm" wire:click="addPhone">@svg('heroicon-o-plus', 'w-4 h-4') Hinzufügen</x-nx-button>
+                    </div>
                 </div>
             </x-nx-card>
         </x-nx-section>
 
-        {{-- Adresse --}}
-        <x-nx-section icon="heroicon-o-map-pin" title="Adresse">
-            <x-nx-card>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <x-nx-input-text name="form.street" label="Straße" wire:model="form.street" />
-                    <x-nx-input-text name="form.postal_code" label="PLZ" wire:model="form.postal_code" />
-                    <x-nx-input-text name="form.city" label="Ort" wire:model="form.city" />
+        {{-- E-Mail (typisierte Mehrfach-Werte) --}}
+        <x-nx-section icon="heroicon-o-envelope" title="E-Mail" :hint="$emailAddresses->count()">
+            <x-nx-card flush>
+                <div class="divide-y divide-[color:var(--nx-line)]">
+                    @foreach($emailAddresses as $email)
+                        <div class="flex items-center gap-3 px-4 py-2.5" wire:key="email-{{ $email->id }}">
+                            <button type="button" wire:click="setPrimaryEmail({{ $email->id }})" title="Als primär markieren"
+                                    class="shrink-0 {{ $email->is_primary ? 'text-[color:var(--nx-accent)]' : 'text-[color:var(--nx-faint)] hover:text-[color:var(--nx-muted)]' }}">
+                                @svg($email->is_primary ? 'heroicon-s-star' : 'heroicon-o-star', 'w-4 h-4')
+                            </button>
+                            <span class="w-28 shrink-0 text-xs text-[color:var(--nx-muted)]">{{ $email->email_type ?? '—' }}</span>
+                            <span class="flex-1 text-sm text-[color:var(--nx-text)] truncate">{{ $email->email }}</span>
+                            <button type="button" wire:click="removeEmail({{ $email->id }})" wire:confirm="E-Mail entfernen?"
+                                    class="shrink-0 text-[color:var(--nx-faint)] hover:text-[color:var(--nx-danger)]">
+                                @svg('heroicon-o-trash', 'w-4 h-4')
+                            </button>
+                        </div>
+                    @endforeach
+                    <div class="flex items-end gap-2 px-4 py-3 bg-[color:var(--nx-bg)]">
+                        <div class="w-32 shrink-0">
+                            <x-nx-input-select name="newEmail.email_type" label="Typ" wire:model="newEmail.email_type" :options="$emailTypeOptions" nullable nullLabel="—" />
+                        </div>
+                        <div class="flex-1">
+                            <x-nx-input-text name="newEmail.email" label="E-Mail" wire:model="newEmail.email" wire:keydown.enter="addEmail" />
+                        </div>
+                        <x-nx-button variant="secondary" size="sm" wire:click="addEmail">@svg('heroicon-o-plus', 'w-4 h-4') Hinzufügen</x-nx-button>
+                    </div>
+                </div>
+            </x-nx-card>
+        </x-nx-section>
+
+        {{-- Adressen (typisierte Mehrfach-Werte) --}}
+        <x-nx-section icon="heroicon-o-map-pin" title="Adressen" :hint="$postalAddresses->count()">
+            <x-nx-card flush>
+                <div class="divide-y divide-[color:var(--nx-line)]">
+                    @foreach($postalAddresses as $address)
+                        <div class="flex items-center gap-3 px-4 py-2.5" wire:key="addr-{{ $address->id }}">
+                            <button type="button" wire:click="setPrimaryAddress({{ $address->id }})" title="Als primär markieren"
+                                    class="shrink-0 {{ $address->is_primary ? 'text-[color:var(--nx-accent)]' : 'text-[color:var(--nx-faint)] hover:text-[color:var(--nx-muted)]' }}">
+                                @svg($address->is_primary ? 'heroicon-s-star' : 'heroicon-o-star', 'w-4 h-4')
+                            </button>
+                            <span class="w-28 shrink-0 text-xs text-[color:var(--nx-muted)]">{{ $address->address_type ?? '—' }}</span>
+                            <span class="flex-1 text-sm text-[color:var(--nx-text)] truncate">
+                                {{ trim(($address->street ? $address->street . ' ' . $address->house_number : '') . ', ' . trim(($address->postal_code ?? '') . ' ' . ($address->city ?? '')), ', ') ?: '—' }}
+                            </span>
+                            <button type="button" wire:click="removeAddress({{ $address->id }})" wire:confirm="Adresse entfernen?"
+                                    class="shrink-0 text-[color:var(--nx-faint)] hover:text-[color:var(--nx-danger)]">
+                                @svg('heroicon-o-trash', 'w-4 h-4')
+                            </button>
+                        </div>
+                    @endforeach
+                    <div class="px-4 py-3 bg-[color:var(--nx-bg)] space-y-2">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <x-nx-input-select name="newAddress.address_type" label="Typ" wire:model="newAddress.address_type" :options="$addressTypeOptions" nullable nullLabel="—" />
+                            <x-nx-input-text name="newAddress.street" label="Straße" wire:model="newAddress.street" />
+                            <x-nx-input-text name="newAddress.house_number" label="Nr." wire:model="newAddress.house_number" />
+                            <x-nx-input-text name="newAddress.postal_code" label="PLZ" wire:model="newAddress.postal_code" />
+                            <x-nx-input-text name="newAddress.city" label="Ort" wire:model="newAddress.city" />
+                            <x-nx-input-select name="newAddress.country" label="Land" wire:model="newAddress.country" :options="$lookups['country']" nullable nullLabel="—" />
+                        </div>
+                        <div class="flex justify-end">
+                            <x-nx-button variant="secondary" size="sm" wire:click="addAddress">@svg('heroicon-o-plus', 'w-4 h-4') Adresse hinzufügen</x-nx-button>
+                        </div>
+                    </div>
                 </div>
             </x-nx-card>
         </x-nx-section>

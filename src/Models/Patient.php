@@ -4,6 +4,7 @@ namespace Platform\Patient\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Symfony\Component\Uid\UuidV7;
 use Platform\Core\Contracts\HasDisplayName;
@@ -108,5 +109,20 @@ class Patient extends Model implements HasDisplayName
         $name = trim(trim((string) $this->last_name) . ', ' . trim((string) $this->first_name), ', ');
 
         return $name !== '' ? $name : ('Patient #' . $this->id);
+    }
+
+    public function phoneNumbers(): HasMany
+    {
+        return $this->hasMany(PhoneNumber::class, 'patient_id');
+    }
+
+    public function emailAddresses(): HasMany
+    {
+        return $this->hasMany(EmailAddress::class, 'patient_id');
+    }
+
+    public function postalAddresses(): HasMany
+    {
+        return $this->hasMany(PostalAddress::class, 'patient_id');
     }
 }

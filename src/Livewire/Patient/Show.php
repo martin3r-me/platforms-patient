@@ -6,6 +6,9 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Platform\Patient\Models\Patient as PatientModel;
+use Platform\Patient\Models\PhoneNumber;
+use Platform\Patient\Models\EmailAddress;
+use Platform\Patient\Models\PostalAddress;
 use Platform\Patient\Support\Lookups;
 use Platform\Patient\Livewire\Concerns\ResolvesNavContext;
 
@@ -17,6 +20,11 @@ class Show extends Component
     public int $patientId;
 
     public array $form = [];
+
+    // Inline-Neuanlage für typisierte Mehrfach-Kontaktdaten.
+    public array $newPhone = ['phone_type' => null, 'number' => ''];
+    public array $newEmail = ['email_type' => null, 'email' => ''];
+    public array $newAddress = ['address_type' => null, 'street' => '', 'house_number' => '', 'postal_code' => '', 'city' => '', 'country' => null];
 
     /** Bearbeitbare Felder (Team/Besitz wird bei jeder Aktion re-validiert). */
     protected array $fields = [
@@ -91,9 +99,92 @@ class Show extends Component
         return $this->redirectRoute('patient.patients.index', navigate: true);
     }
 
+    // ─── Kontakt: typisierte Mehrfach-Werte (eigenständig, keine CRM-Abhängigkeit) ───
+    public function addPhone(): void
+    {
+        if (trim((string) $this->newPhone['number']) === '') {
+            return;
+        }
+        $isFirst = PhoneNumber::query()->where('patient_id', $this->patientId)->count() === 0;
+        PhoneNumber::create([
+            'patient_id' => $this->patientId,
+            'phone_type' => $this->newPhone['phone_type'] ?: null,
+            'number'     => trim((string) $this->newPhone['number']),
+            'is_primary' => $isFirst,
+        ]);
+        $this->newPhone = ['phone_type' => null, 'number' => ''];
+    }
+
+    public function removePhone(int $id): void
+    {
+        PhoneNumber::query()->where('patient_id', $this->patientId)->whereKey($id)->delete();
+    }
+
+    public function setPrimaryPhone(int $id): void
+    {
+        PhoneNumber::query()->where('patient_id', $this->patientId)->update(['is_primary' => false]);
+        PhoneNumber::query()->where('patient_id', $this->patientId)->whereKey($id)->update(['is_primary' => true]);
+    }
+
+    public function addEmail(): void
+    {
+        if (trim((string) $this->newEmail['email']) === '') {
+            return;
+        }
+        $isFirst = EmailAddress::query()->where('patient_id', $this->patientId)->count() === 0;
+        EmailAddress::create([
+            'patient_id' => $this->patientId,
+            'email_type' => $this->newEmail['email_type'] ?: null,
+            'email'      => trim((string) $this->newEmail['email']),
+            'is_primary' => $isFirst,
+        ]);
+        $this->newEmail = ['email_type' => null, 'email' => ''];
+    }
+
+    public function removeEmail(int $id): void
+    {
+        EmailAddress::query()->where('patient_id', $this->patientId)->whereKey($id)->delete();
+    }
+
+    public function setPrimaryEmail(int $id): void
+    {
+        EmailAddress::query()->where('patient_id', $this->patientId)->update(['is_primary' => false]);
+        EmailAddress::query()->where('patient_id', $this->patientId)->whereKey($id)->update(['is_primary' => true]);
+    }
+
+    public function addAddress(): void
+    {
+        if (trim((string) $this->newAddress['street']) === '' && trim((string) $this->newAddress['city']) === '') {
+            return;
+        }
+        $isFirst = PostalAddress::query()->where('patient_id', $this->patientId)->count() === 0;
+        PostalAddress::create([
+            'patient_id'   => $this->patientId,
+            'address_type' => $this->newAddress['address_type'] ?: null,
+            'street'       => $this->newAddress['street'] ?: null,
+            'house_number' => $this->newAddress['house_number'] ?: null,
+            'postal_code'  => $this->newAddress['postal_code'] ?: null,
+            'city'         => $this->newAddress['city'] ?: null,
+            'country'      => $this->newAddress['country'] ?: null,
+            'is_primary'   => $isFirst,
+        ]);
+        $this->newAddress = ['address_type' => null, 'street' => '', 'house_number' => '', 'postal_code' => '', 'city' => '', 'country' => null];
+    }
+
+    public function removeAddress(int $id): void
+    {
+        PostalAddress::query()->where('patient_id', $this->patientId)->whereKey($id)->delete();
+    }
+
+    public function setPrimaryAddress(int $id): void
+    {
+        PostalAddress::query()->where('patient_id', $this->patientId)->update(['is_primary' => false]);
+        PostalAddress::query()->where('patient_id', $this->patientId)->whereKey($id)->update(['is_primary' => true]);
+    }
+
     public function render()
     {
-        $model = $this->resolvePatient($this->patientId);
+        $model = $this->resolvePatient($this->patientId)->load(['phoneNumbers', 'emailAddresses', 'postalAddresses']);
         $team = (int) Auth::user()->currentTeam->id;
 
         // Bestehenden Wert immer als Option behalten (auch wenn nicht in der Liste).
@@ -124,6 +215,12 @@ class Show extends Component
             'gdbSteps' => Lookups::disabilitySteps(),
             'panels'   => $panels,
             'nav'      => $this->navContext($team),
+            'phoneNumbers'       => $model->phoneNumbers,
+            'emailAddresses'     => $model->emailAddresses,
+            'postalAddresses'    => $model->postalAddresses,
+            'phoneTypeOptions'   => Lookups::optionsFor('phone_type', $team),
+            'emailTypeOptions'   => Lookups::optionsFor('email_type', $team),
+            'addressTypeOptions' => Lookups::optionsFor('address_type', $team),
         ])->layout('platform::layouts.app');
     }
 }

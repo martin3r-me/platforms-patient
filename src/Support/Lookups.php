@@ -16,7 +16,7 @@ use Platform\Patient\Models\Lookup;
 class Lookups
 {
     /** Lookup-Typen (alle DB-basiert, seedbar, editierbar). */
-    public const TYPES = ['gender', 'marital_status', 'nationality', 'language', 'country', 'health_insurance'];
+    public const TYPES = ['gender', 'marital_status', 'nationality', 'language', 'country', 'health_insurance', 'address_type', 'phone_type', 'email_type'];
 
     /** Seed-Defaults je Typ (nur beim ersten Zugriff eines Teams verwendet). */
     public const SEEDS = [
@@ -26,6 +26,9 @@ class Lookups
         'language'         => ['Deutsch', 'Englisch', 'Türkisch', 'Russisch', 'Polnisch', 'Arabisch'],
         'country'          => ['Deutschland', 'Österreich', 'Schweiz', 'Polen', 'Türkei', 'Italien', 'Frankreich'],
         'health_insurance' => ['AOK', 'Barmer', 'Techniker Krankenkasse (TK)', 'DAK-Gesundheit', 'IKK classic', 'KKH', 'Knappschaft', 'hkk', 'privat'],
+        'address_type'     => ['Hauptwohnsitz', 'Nebenwohnsitz', 'Arbeit', 'Postadresse'],
+        'phone_type'       => ['Mobil', 'Festnetz', 'Geschäftlich', 'Fax'],
+        'email_type'       => ['Privat', 'Geschäftlich'],
     ];
 
     /**
