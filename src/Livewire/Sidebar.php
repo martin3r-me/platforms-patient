@@ -36,7 +36,17 @@ class Sidebar extends Component
         $activeLens = $registry->lens($activeLensKey);
         $activeNode = request()->query('node');
 
-        $tree = ($activeLens && $team) ? $activeLens->tree($team) : [];
+        $tree = [];
+        if ($activeLens && $team) {
+            foreach ($activeLens->tree($team) as $n) {
+                $tree[] = [
+                    'id'    => $n['id'],
+                    'label' => $n['label'],
+                    'depth' => $n['depth'] ?? 0,
+                    'url'   => route('patient.patients.index', ['lens' => $activeLensKey, 'node' => $n['id']]),
+                ];
+            }
+        }
 
         // Patient-first: zuletzt besuchte Patienten (nur ohne aktive Linse).
         $patients = collect();

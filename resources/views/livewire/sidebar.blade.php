@@ -54,18 +54,7 @@
                 Keine Einträge in dieser Perspektive.
             </div>
         @else
-            <x-ui-sidebar-list :label="$activeLens->label()">
-                @foreach($tree as $node)
-                    <x-ui-sidebar-item
-                        :href="route('patient.patients.index', ['lens' => $activeLensKey, 'node' => $node['id']])"
-                        :active="(string) $activeNode === (string) $node['id']">
-                        <span class="flex items-center gap-2 min-w-0" style="padding-left: {{ ($node['depth'] ?? 0) * 0.75 }}rem">
-                            @svg(($node['depth'] ?? 0) === 0 ? 'heroicon-o-building-office-2' : 'heroicon-o-building-office', 'w-4 h-4 text-[var(--nx-text)] shrink-0')
-                            <span class="text-sm truncate">{{ $node['label'] }}</span>
-                        </span>
-                    </x-ui-sidebar-item>
-                @endforeach
-            </x-ui-sidebar-list>
+            <x-ui-tree-nav :label="$activeLens->label()" :nodes="$tree" :activeId="$activeNode" />
         @endif
     @else
         {{-- Patient-first (fachneutraler Default / Fallback) --}}
