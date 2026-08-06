@@ -6,6 +6,7 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Platform\Patient\Models\Patient as PatientModel;
 use Platform\Patient\Livewire\Concerns\ResolvesNavContext;
+use Platform\Patient\Services\PatientNavigationRegistry;
 
 class Index extends Component
 {
@@ -77,9 +78,27 @@ class Index extends Component
             ->orderBy('first_name')
             ->get();
 
+        $nav = $this->navContext((int) $team->id);
+
+        // Sidebar-Modus konsistent zur aktiven Perspektive:
+        //  node   = Betrieb + Knoten gewählt → Patientenliste des Knotens
+        //  search = Perspektive „Suche" (oder keine Linse registriert) → Suchfeld + Liste
+        //  pick   = Linse aktiv, aber kein Knoten → „wähle links einen Betrieb"
+        $registry = resolve(PatientNavigationRegistry::class);
+        $isSearch = (request()->query('lens') === 'search') || !$registry->has();
+
+        if (!empty($nav['lensKey']) && $nav['nodeId'] !== null) {
+            $sidebarMode = 'node';
+        } elseif ($isSearch) {
+            $sidebarMode = 'search';
+        } else {
+            $sidebarMode = 'pick';
+        }
+
         return view('patient::livewire.patient.index', [
-            'patients' => $patients,
-            'nav'      => $this->navContext((int) $team->id),
+            'patients'    => $patients,
+            'nav'         => $nav,
+            'sidebarMode' => $sidebarMode,
         ])->layout('platform::layouts.app');
     }
 }

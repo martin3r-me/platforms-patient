@@ -30,8 +30,14 @@
     </x-ui-page-container>
 
     <x-slot name="sidebar">
-        @if(!empty($nav['lensKey']) && $nav['nodeId'] !== null)
+        @if($sidebarMode === 'node')
             @include('patient::livewire.patient._context-sidebar', ['nav' => $nav])
+        @elseif($sidebarMode === 'pick')
+            <x-ui-page-sidebar title="Betrieb wählen" icon="heroicon-o-building-office-2" width="w-72" :defaultOpen="true">
+                <div class="p-6 text-sm text-[color:var(--nx-muted)]">
+                    Wähle links im Baum einen Betrieb bzw. eine Abteilung, um die Patientenliste zu sehen — oder wechsle die Perspektive auf „Suche".
+                </div>
+            </x-ui-page-sidebar>
         @else
             <x-ui-page-sidebar title="Patienten" icon="heroicon-o-identification" width="w-72" :defaultOpen="true">
                 <div class="p-2 space-y-2">
