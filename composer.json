@@ -1,0 +1,21 @@
+{
+    "name": "martin3r/platform-patient",
+    "description": "Patient - fachneutrale, isolierte Patienten-Stammdaten (Schweigepflicht/DSGVO)",
+    "type": "library",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Platform\\Patient\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Platform\\Patient\\PatientServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
