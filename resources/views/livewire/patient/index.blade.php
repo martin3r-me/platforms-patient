@@ -20,40 +20,40 @@
     </x-slot>
 
     <x-ui-page-container width="contained" spacing="space-y-6">
-        <x-nx-input-text name="search" wire:model.live.debounce.300ms="search"
-                         placeholder="Suche nach Name oder Labor-Nr …" />
-
-        @if($patients->isEmpty())
-            <x-nx-card>
-                <x-nx-empty icon="heroicon-o-identification">
-                    Noch keine Patienten. Lege den ersten über „Neuer Patient" an.
-                </x-nx-empty>
-            </x-nx-card>
-        @else
-            <x-nx-card flush>
-                <x-nx-table>
-                    <x-nx-table-header>
-                        <x-nx-table-header-cell>Name</x-nx-table-header-cell>
-                        <x-nx-table-header-cell>Geburtsdatum</x-nx-table-header-cell>
-                        <x-nx-table-header-cell>Labor-Nr</x-nx-table-header-cell>
-                    </x-nx-table-header>
-                    <x-nx-table-body>
-                        @foreach($patients as $patient)
-                            <x-nx-table-row wire:key="patient-{{ $patient->id }}"
-                                            :href="route('patient.patients.show', $patient->id)">
-                                <x-nx-table-cell>{{ $patient->getDisplayName() }}</x-nx-table-cell>
-                                <x-nx-table-cell>{{ optional($patient->birth_date)->format('d.m.Y') ?? '—' }}</x-nx-table-cell>
-                                <x-nx-table-cell>{{ $patient->lab_number ?? '—' }}</x-nx-table-cell>
-                            </x-nx-table-row>
-                        @endforeach
-                    </x-nx-table-body>
-                </x-nx-table>
-            </x-nx-card>
-        @endif
+        {{-- Einstieg links (Baum/Suche in der Sidebar); Main zeigt keinen Gesamt-Liste-Dump. --}}
+        <x-nx-card>
+            <x-nx-empty icon="heroicon-o-identification">
+                Kein Patient ausgewählt. Wähle links über die Perspektive einen Betrieb bzw. Patienten
+                — oder nutze die Suche in der Seitenleiste.
+            </x-nx-empty>
+        </x-nx-card>
     </x-ui-page-container>
 
     <x-slot name="sidebar">
-        @include('patient::livewire.patient._context-sidebar', ['nav' => $nav])
+        @if(!empty($nav['lensKey']) && $nav['nodeId'] !== null)
+            @include('patient::livewire.patient._context-sidebar', ['nav' => $nav])
+        @else
+            <x-ui-page-sidebar title="Patienten" icon="heroicon-o-identification" width="w-72" :defaultOpen="true">
+                <div class="p-2 space-y-2">
+                    <x-nx-input-text name="search" wire:model.live.debounce.300ms="search"
+                                     placeholder="Name / Labor-Nr …" />
+                    <div class="space-y-0.5">
+                        @forelse($patients as $patient)
+                            <a href="{{ route('patient.patients.show', ['patient' => $patient->id, 'lens' => 'search']) }}" wire:navigate
+                               class="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[color:var(--nx-text)] hover:bg-[color:var(--nx-hover)]">
+                                @svg('heroicon-o-user', 'w-4 h-4 text-[color:var(--nx-muted)] shrink-0')
+                                <span class="min-w-0">
+                                    <span class="block truncate">{{ $patient->getDisplayName() }}</span>
+                                    <span class="block text-xs text-[color:var(--nx-faint)]">{{ optional($patient->birth_date)->format('d.m.Y') ?? '—' }}</span>
+                                </span>
+                            </a>
+                        @empty
+                            <div class="px-2 py-3 text-sm text-[color:var(--nx-muted)]">Keine Treffer.</div>
+                        @endforelse
+                    </div>
+                </div>
+            </x-ui-page-sidebar>
+        @endif
     </x-slot>
 
     <x-slot name="activity">
