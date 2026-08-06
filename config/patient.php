@@ -47,18 +47,6 @@ return [
             ],
         ],
     ],
-
-    /**
-     * Lookup-SEEDS — werden EINMALIG pro Team in die `patient_lookups`-Tabelle geseedet
-     * (lazy, idempotent). Zur Laufzeit ist die DB die einzige Quelle; diese Listen werden
-     * NUR beim ersten Zugriff eines Teams verwendet. Danach voll editierbar per Settings/MCP.
-     */
-    'lookup_seeds' => [
-        'gender'         => ['weiblich', 'männlich', 'divers', 'unbekannt'],
-        'marital_status' => ['ledig', 'verheiratet', 'geschieden', 'verwitwet', 'eingetragene Lebenspartnerschaft', 'getrennt lebend'],
-        'nationality'    => ['deutsch', 'türkisch', 'polnisch', 'italienisch', 'russisch', 'syrisch', 'rumänisch', 'österreichisch', 'sonstige'],
-        'language'       => ['Deutsch', 'Englisch', 'Türkisch', 'Russisch', 'Polnisch', 'Arabisch'],
-        'country'        => ['Deutschland', 'Österreich', 'Schweiz', 'Polen', 'Türkei', 'Italien', 'Frankreich'],
-        'health_insurance' => ['AOK', 'Barmer', 'Techniker Krankenkasse (TK)', 'DAK-Gesundheit', 'IKK classic', 'KKH', 'Knappschaft', 'hkk', 'privat'],
-    ],
+    // Lookup-Seed-Defaults liegen bewusst im Code (Support\Lookups::SEEDS), NICHT hier —
+    // damit sie unabhängig vom Config-Cache der Instanz verfügbar sind.
 ];
