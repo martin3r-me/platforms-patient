@@ -53,14 +53,7 @@
     </x-ui-page-container>
 
     <x-slot name="sidebar">
-        <x-ui-page-sidebar title="Übersicht" width="w-80" :defaultOpen="true">
-            <div class="p-6 space-y-6">
-                <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wide text-[color:var(--nx-faint)] mb-3">Patienten</h3>
-                    <div class="text-sm text-[color:var(--nx-muted)]">{{ $patients->count() }} Einträge.</div>
-                </div>
-            </div>
-        </x-ui-page-sidebar>
+        @include('patient::livewire.patient._context-sidebar', ['nav' => $nav])
     </x-slot>
 
     <x-slot name="activity">

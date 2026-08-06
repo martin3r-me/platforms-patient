@@ -5,9 +5,12 @@ namespace Platform\Patient\Livewire\Patient;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Platform\Patient\Models\Patient as PatientModel;
+use Platform\Patient\Livewire\Concerns\ResolvesNavContext;
 
 class Index extends Component
 {
+    use ResolvesNavContext;
+
     public string $search = '';
 
     public bool $showCreate = false;
@@ -76,6 +79,7 @@ class Index extends Component
 
         return view('patient::livewire.patient.index', [
             'patients' => $patients,
+            'nav'      => $this->navContext((int) $team->id),
         ])->layout('platform::layouts.app');
     }
 }

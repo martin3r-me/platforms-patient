@@ -7,9 +7,12 @@ use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Platform\Patient\Models\Patient as PatientModel;
 use Platform\Patient\Support\Lookups;
+use Platform\Patient\Livewire\Concerns\ResolvesNavContext;
 
 class Show extends Component
 {
+    use ResolvesNavContext;
+
     #[Locked]
     public int $patientId;
 
@@ -120,6 +123,7 @@ class Show extends Component
             'lookups'  => $lookups,
             'gdbSteps' => Lookups::disabilitySteps(),
             'panels'   => $panels,
+            'nav'      => $this->navContext($team),
         ])->layout('platform::layouts.app');
     }
 }

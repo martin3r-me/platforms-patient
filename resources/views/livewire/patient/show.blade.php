@@ -137,23 +137,27 @@
     </x-ui-page-container>
 
     <x-slot name="sidebar">
-        <x-ui-page-sidebar title="Übersicht" width="w-80" :defaultOpen="true">
-            <div class="p-6 space-y-6">
-                <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wide text-[color:var(--nx-faint)] mb-3">Stammdaten</h3>
-                    <dl class="space-y-2 text-sm">
-                        <div class="flex justify-between gap-3">
-                            <dt class="text-[color:var(--nx-muted)]">UUID</dt>
-                            <dd class="truncate text-[color:var(--nx-text)]">{{ \Illuminate\Support\Str::limit($patient->uuid, 13) }}</dd>
-                        </div>
-                        <div class="flex justify-between gap-3">
-                            <dt class="text-[color:var(--nx-muted)]">Angelegt</dt>
-                            <dd class="text-[color:var(--nx-text)]">{{ optional($patient->created_at)->format('d.m.Y') }}</dd>
-                        </div>
-                    </dl>
+        @if(!empty($nav['lensKey']) && $nav['nodeId'] !== null)
+            @include('patient::livewire.patient._context-sidebar', ['nav' => $nav, 'activePatientId' => $patient->id])
+        @else
+            <x-ui-page-sidebar title="Übersicht" width="w-80" :defaultOpen="true">
+                <div class="p-6 space-y-6">
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wide text-[color:var(--nx-faint)] mb-3">Stammdaten</h3>
+                        <dl class="space-y-2 text-sm">
+                            <div class="flex justify-between gap-3">
+                                <dt class="text-[color:var(--nx-muted)]">UUID</dt>
+                                <dd class="truncate text-[color:var(--nx-text)]">{{ \Illuminate\Support\Str::limit($patient->uuid, 13) }}</dd>
+                            </div>
+                            <div class="flex justify-between gap-3">
+                                <dt class="text-[color:var(--nx-muted)]">Angelegt</dt>
+                                <dd class="text-[color:var(--nx-text)]">{{ optional($patient->created_at)->format('d.m.Y') }}</dd>
+                            </div>
+                        </dl>
+                    </div>
                 </div>
-            </div>
-        </x-ui-page-sidebar>
+            </x-ui-page-sidebar>
+        @endif
     </x-slot>
 
     <x-slot name="activity">

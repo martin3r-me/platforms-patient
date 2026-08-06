@@ -19,6 +19,9 @@ class PatientServiceProvider extends ServiceProvider
 
         // Akte-Panel-Registry: Fachmodule (encounter, occupational, …) docken Panels an.
         $this->app->singleton(\Platform\Patient\Services\PatientPanelRegistry::class);
+
+        // Navigations-Linsen-Registry: Fachmodule bringen führende Dimensionen mit (Betrieb, …).
+        $this->app->singleton(\Platform\Patient\Services\PatientNavigationRegistry::class);
     }
 
     public function boot(): void
