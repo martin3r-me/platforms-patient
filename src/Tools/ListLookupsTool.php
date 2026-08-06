@@ -21,7 +21,7 @@ class ListLookupsTool implements ToolContract, ToolMetadataContract
 
     public function getDescription(): string
     {
-        return 'GET /patient/lookups - Lists team lookup values and the effective select options (config defaults + team values) for patient master-data fields. Types: marital_status, nationality, language, country, health_insurance.';
+        return 'GET /patient/lookups - Lists the team lookup values (DB-backed, seeded with defaults on first access) for patient master-data select fields. Types: gender, marital_status, nationality, language, country, health_insurance.';
     }
 
     public function getSchema(): array
@@ -43,6 +43,8 @@ class ListLookupsTool implements ToolContract, ToolMetadataContract
                 return $resolved['error'];
             }
             $teamId = (int) $resolved['team_id'];
+
+            Lookups::ensureSeeded($teamId);
 
             $query = Lookup::query()->forTeam($teamId);
             if (isset($arguments['type'])) {

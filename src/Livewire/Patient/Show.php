@@ -104,7 +104,7 @@ class Show extends Component
         };
 
         $lookups = [
-            'gender'           => $ensure(Lookups::valueSet('gender'), $this->form['gender'] ?? null),
+            'gender'           => $ensure(Lookups::optionsFor('gender', $team), $this->form['gender'] ?? null),
             'marital_status'   => $ensure(Lookups::optionsFor('marital_status', $team), $this->form['marital_status'] ?? null),
             'nationality'      => $ensure(Lookups::optionsFor('nationality', $team), $this->form['nationality'] ?? null),
             'language'         => $ensure(Lookups::optionsFor('language', $team), $this->form['language'] ?? null),
@@ -115,7 +115,7 @@ class Show extends Component
         return view('patient::livewire.patient.show', [
             'patient'  => $model,
             'lookups'  => $lookups,
-            'gdbSteps' => Lookups::valueSet('disability_degree'),
+            'gdbSteps' => Lookups::disabilitySteps(),
         ])->layout('platform::layouts.app');
     }
 }

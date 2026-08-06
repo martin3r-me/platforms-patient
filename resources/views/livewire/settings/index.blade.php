@@ -29,46 +29,38 @@
                 @endforeach
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {{-- Team-Werte --}}
-                <x-nx-card>
-                    <div class="flex items-center gap-2 mb-3">
-                        <x-nx-input-text name="newValue" wire:model="newValue"
-                                         wire:keydown.enter="add"
-                                         placeholder="Neuen Wert hinzufügen …" class="flex-1" />
-                        <x-nx-button variant="primary" size="sm" wire:click="add">
-                            @svg('heroicon-o-plus', 'w-4 h-4')
-                        </x-nx-button>
-                    </div>
-                    @error('newValue') <p class="text-xs text-[color:rgb(var(--ui-danger-rgb))] mb-2">{{ $message }}</p> @enderror
+            <x-nx-card>
+                <div class="flex items-center gap-2 mb-3">
+                    <x-nx-input-text name="newValue" wire:model="newValue"
+                                     wire:keydown.enter="add"
+                                     placeholder="Neuen Wert hinzufügen …" class="flex-1" />
+                    <x-nx-button variant="primary" size="sm" wire:click="add">
+                        @svg('heroicon-o-plus', 'w-4 h-4')
+                    </x-nx-button>
+                </div>
+                @error('newValue') <p class="text-xs text-[color:rgb(var(--ui-danger-rgb))] mb-2">{{ $message }}</p> @enderror
 
-                    @if($teamValues->isEmpty())
-                        <div class="text-sm text-[color:var(--nx-muted)]">Noch keine team-eigenen Werte.</div>
-                    @else
-                        <div class="divide-y divide-[color:var(--nx-line)]">
-                            @foreach($teamValues as $lookup)
-                                <div class="flex items-center justify-between py-2" wire:key="lk-{{ $lookup->id }}">
-                                    <span class="text-sm text-[color:var(--nx-text)]">{{ $lookup->value }}</span>
-                                    <x-nx-button variant="danger" size="xs" wire:click="delete({{ $lookup->id }})"
-                                                 wire:confirm="Wert entfernen?">
-                                        @svg('heroicon-o-trash', 'w-4 h-4')
-                                    </x-nx-button>
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
-                </x-nx-card>
-
-                {{-- Defaults (Info) --}}
-                <x-nx-card>
-                    <h4 class="text-xs font-semibold uppercase tracking-wide text-[color:var(--nx-faint)] mb-3">Standard-Werte (immer verfügbar)</h4>
-                    <div class="flex flex-wrap gap-1.5">
-                        @foreach($defaults as $default)
-                            <x-nx-badge size="xs">{{ $default }}</x-nx-badge>
+                @if($teamValues->isEmpty())
+                    <div class="text-sm text-[color:var(--nx-muted)]">Keine Werte. Füge welche hinzu.</div>
+                @else
+                    <div class="divide-y divide-[color:var(--nx-line)]">
+                        @foreach($teamValues as $lookup)
+                            <div class="flex items-center justify-between py-2" wire:key="lk-{{ $lookup->id }}">
+                                <span class="text-sm text-[color:var(--nx-text)]">
+                                    {{ $lookup->value }}
+                                    @unless($lookup->active)
+                                        <x-nx-badge size="xs">inaktiv</x-nx-badge>
+                                    @endunless
+                                </span>
+                                <x-nx-button variant="danger" size="xs" wire:click="delete({{ $lookup->id }})"
+                                             wire:confirm="Wert entfernen?">
+                                    @svg('heroicon-o-trash', 'w-4 h-4')
+                                </x-nx-button>
+                            </div>
                         @endforeach
                     </div>
-                </x-nx-card>
-            </div>
+                @endif
+            </x-nx-card>
         </x-nx-section>
     </x-ui-page-container>
 

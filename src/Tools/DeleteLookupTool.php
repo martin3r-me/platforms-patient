@@ -22,7 +22,7 @@ class DeleteLookupTool implements ToolContract, ToolMetadataContract
 
     public function getDescription(): string
     {
-        return 'DELETE /patient/lookups - Deletes a team lookup value (config defaults are unaffected). REQUIRED: lookup_id.';
+        return 'DELETE /patient/lookups - Deletes a lookup value. REQUIRED: lookup_id.';
     }
 
     public function getSchema(): array

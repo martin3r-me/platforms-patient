@@ -23,7 +23,7 @@ class CreateLookupTool implements ToolContract, ToolMetadataContract
 
     public function getDescription(): string
     {
-        return 'POST /patient/lookups - Adds a team lookup value (extends config defaults). REQUIRED: type (marital_status|nationality|language|country|health_insurance), value. Optional: label, position, active (default true).';
+        return 'POST /patient/lookups - Adds a lookup value for a patient master-data select field. REQUIRED: type (gender|marital_status|nationality|language|country|health_insurance), value. Optional: label, position, active (default true).';
     }
 
     public function getSchema(): array

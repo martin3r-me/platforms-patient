@@ -13,12 +13,18 @@ class Index extends Component
     public string $newValue = '';
 
     public array $typeLabels = [
+        'gender'           => 'Geschlecht',
         'marital_status'   => 'Familienstand',
         'nationality'      => 'Nationalität',
         'language'         => 'Sprache',
         'country'          => 'Land',
         'health_insurance' => 'Krankenkasse',
     ];
+
+    public function mount(): void
+    {
+        Lookups::ensureSeeded($this->teamId());
+    }
 
     public function selectType(string $type): void
     {
@@ -78,7 +84,6 @@ class Index extends Component
 
         return view('patient::livewire.settings.index', [
             'types'      => Lookups::TYPES,
-            'defaults'   => (array) config("patient.lookup_defaults.{$this->activeType}", []),
             'teamValues' => $teamValues,
         ])->layout('platform::layouts.app');
     }
