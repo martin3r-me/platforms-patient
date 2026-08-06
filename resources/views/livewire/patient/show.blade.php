@@ -25,40 +25,25 @@
     </x-slot>
 
     <x-ui-page-container width="contained" spacing="space-y-6">
-        {{-- Akte: von Fachmodulen beigesteuerte Panels (Termine, Beschäftigung, …) --}}
-        @foreach($panels as $panel)
-            <x-nx-section :icon="'heroicon-o-' . ($panel['icon'] ?? 'squares-2x2')"
-                          :title="$panel['title']" :hint="count($panel['items'] ?? [])">
-                @if(!empty($panel['actions']))
-                    <x-slot name="action">
-                        @foreach($panel['actions'] as $action)
-                            <x-nx-button variant="secondary" size="sm" :href="$action['url']" wire:navigate>
-                                {{ $action['label'] }}
-                            </x-nx-button>
-                        @endforeach
-                    </x-slot>
-                @endif
-                @if(empty($panel['items']))
-                    <x-nx-card>
-                        <x-nx-empty :icon="'heroicon-o-' . ($panel['icon'] ?? 'squares-2x2')">
-                            {{ $panel['empty'] ?? 'Keine Einträge.' }}
-                        </x-nx-empty>
-                    </x-nx-card>
-                @else
-                    <x-nx-card flush class="divide-y divide-[color:var(--nx-line)]">
-                        @foreach($panel['items'] as $item)
-                            <x-nx-list-item :href="$item['url'] ?? null"
-                                            :icon="'heroicon-o-' . ($panel['icon'] ?? 'squares-2x2')"
-                                            :title="$item['title'] ?? '—'"
-                                            :subtitle="$item['subtitle'] ?? null"
-                                            :meta="$item['meta'] ?? null" />
-                        @endforeach
-                    </x-nx-card>
-                @endif
-            </x-nx-section>
-        @endforeach
+        {{-- Akte öffnen — der klinische Verlauf lebt im Akte-Modul; hier nur Stammdaten. --}}
+        @if(\Illuminate\Support\Facades\Route::has('encounter.akte.show'))
+            <a href="{{ route('encounter.akte.show', $patient->id) }}" wire:navigate class="block">
+                <x-nx-card class="hover:bg-[color:var(--nx-hover)] transition-colors">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            @svg('heroicon-o-folder-open', 'w-6 h-6 text-[color:var(--nx-muted)]')
+                            <div>
+                                <div class="text-sm font-medium text-[color:var(--nx-text)]">Akte öffnen</div>
+                                <div class="text-xs text-[color:var(--nx-muted)]">Verlauf: Termine, Vorsorge, Beschäftigung, Werte</div>
+                            </div>
+                        </div>
+                        @svg('heroicon-o-arrow-right', 'w-5 h-5 text-[color:var(--nx-faint)]')
+                    </div>
+                </x-nx-card>
+            </a>
+        @endif
 
-        {{-- Identität --}}
+        {{-- Identität (Stammdaten) --}}
         <x-nx-section icon="heroicon-o-identification" title="Identität">
             <x-nx-card>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
