@@ -112,10 +112,14 @@ class Show extends Component
             'health_insurance' => $ensure(Lookups::optionsFor('health_insurance', $team), $this->form['health_insurance'] ?? null),
         ];
 
+        $panels = resolve(\Platform\Patient\Services\PatientPanelRegistry::class)
+            ->panelsFor((int) $model->id, $team);
+
         return view('patient::livewire.patient.show', [
             'patient'  => $model,
             'lookups'  => $lookups,
             'gdbSteps' => Lookups::disabilitySteps(),
+            'panels'   => $panels,
         ])->layout('platform::layouts.app');
     }
 }

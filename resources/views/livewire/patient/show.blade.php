@@ -25,6 +25,39 @@
     </x-slot>
 
     <x-ui-page-container width="contained" spacing="space-y-6">
+        {{-- Akte: von Fachmodulen beigesteuerte Panels (Termine, Beschäftigung, …) --}}
+        @foreach($panels as $panel)
+            <x-nx-section :icon="'heroicon-o-' . ($panel['icon'] ?? 'squares-2x2')"
+                          :title="$panel['title']" :hint="count($panel['items'] ?? [])">
+                @if(!empty($panel['actions']))
+                    <x-slot name="action">
+                        @foreach($panel['actions'] as $action)
+                            <x-nx-button variant="secondary" size="sm" :href="$action['url']" wire:navigate>
+                                {{ $action['label'] }}
+                            </x-nx-button>
+                        @endforeach
+                    </x-slot>
+                @endif
+                @if(empty($panel['items']))
+                    <x-nx-card>
+                        <x-nx-empty :icon="'heroicon-o-' . ($panel['icon'] ?? 'squares-2x2')">
+                            {{ $panel['empty'] ?? 'Keine Einträge.' }}
+                        </x-nx-empty>
+                    </x-nx-card>
+                @else
+                    <x-nx-card flush class="divide-y divide-[color:var(--nx-line)]">
+                        @foreach($panel['items'] as $item)
+                            <x-nx-list-item :href="$item['url'] ?? null"
+                                            :icon="'heroicon-o-' . ($panel['icon'] ?? 'squares-2x2')"
+                                            :title="$item['title'] ?? '—'"
+                                            :subtitle="$item['subtitle'] ?? null"
+                                            :meta="$item['meta'] ?? null" />
+                        @endforeach
+                    </x-nx-card>
+                @endif
+            </x-nx-section>
+        @endforeach
+
         {{-- Identität --}}
         <x-nx-section icon="heroicon-o-identification" title="Identität">
             <x-nx-card>

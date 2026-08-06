@@ -16,6 +16,9 @@ class PatientServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/patient.php', 'patient');
+
+        // Akte-Panel-Registry: Fachmodule (encounter, occupational, …) docken Panels an.
+        $this->app->singleton(\Platform\Patient\Services\PatientPanelRegistry::class);
     }
 
     public function boot(): void
