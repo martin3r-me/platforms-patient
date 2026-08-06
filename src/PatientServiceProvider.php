@@ -67,6 +67,12 @@ class PatientServiceProvider extends ServiceProvider
             $registry->register(new \Platform\Patient\Tools\CreatePatientTool());
             $registry->register(new \Platform\Patient\Tools\UpdatePatientTool());
             $registry->register(new \Platform\Patient\Tools\DeletePatientTool());
+
+            // Settings: Lookups (Referenzlisten)
+            $registry->register(new \Platform\Patient\Tools\ListLookupsTool());
+            $registry->register(new \Platform\Patient\Tools\CreateLookupTool());
+            $registry->register(new \Platform\Patient\Tools\UpdateLookupTool());
+            $registry->register(new \Platform\Patient\Tools\DeleteLookupTool());
         } catch (\Throwable $e) {
             // ToolRegistry nicht verfügbar (z. B. in bestimmten CLI-Kontexten) — ignorieren.
         }

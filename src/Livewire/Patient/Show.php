@@ -6,6 +6,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Platform\Patient\Models\Patient as PatientModel;
+use Platform\Patient\Support\Lookups;
 
 class Show extends Component
 {
@@ -90,9 +91,31 @@ class Show extends Component
     public function render()
     {
         $model = $this->resolvePatient($this->patientId);
+        $team = (int) Auth::user()->currentTeam->id;
+
+        // Bestehenden Wert immer als Option behalten (auch wenn nicht in der Liste).
+        $ensure = function (array $opts, $current): array {
+            $current = (string) $current;
+            $flat = array_map('strval', $opts);
+            if ($current !== '' && !in_array($current, $flat, true)) {
+                array_unshift($opts, $current);
+            }
+            return $opts;
+        };
+
+        $lookups = [
+            'gender'           => $ensure(Lookups::valueSet('gender'), $this->form['gender'] ?? null),
+            'marital_status'   => $ensure(Lookups::optionsFor('marital_status', $team), $this->form['marital_status'] ?? null),
+            'nationality'      => $ensure(Lookups::optionsFor('nationality', $team), $this->form['nationality'] ?? null),
+            'language'         => $ensure(Lookups::optionsFor('language', $team), $this->form['language'] ?? null),
+            'country'          => $ensure(Lookups::optionsFor('country', $team), $this->form['country'] ?? null),
+            'health_insurance' => $ensure(Lookups::optionsFor('health_insurance', $team), $this->form['health_insurance'] ?? null),
+        ];
 
         return view('patient::livewire.patient.show', [
-            'patient' => $model,
+            'patient'  => $model,
+            'lookups'  => $lookups,
+            'gdbSteps' => Lookups::valueSet('disability_degree'),
         ])->layout('platform::layouts.app');
     }
 }
