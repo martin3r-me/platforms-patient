@@ -20,6 +20,10 @@
     </x-slot>
 
     <x-ui-page-container width="contained" spacing="space-y-6">
+        <p class="text-sm text-[color:var(--nx-muted)]">
+            Stammdaten aller Personen — fachneutral (Name, Kontakt, Identität). Die medizinische <strong>Akte</strong> (Verlauf, Termine, Vorsorge) liegt im Modul <em>Akte</em>.
+        </p>
+
         <x-nx-stat-grid :cols="1">
             <a href="{{ route('patient.patients.index') }}" wire:navigate>
                 <x-nx-stat label="Patienten" :value="$stats['total']" icon="heroicon-o-identification" hint="im Team" />
@@ -45,7 +49,7 @@
             <div class="p-6 space-y-6">
                 <div>
                     <h3 class="text-xs font-semibold uppercase tracking-wide text-[color:var(--nx-faint)] mb-3">Patienten</h3>
-                    <div class="text-sm text-[color:var(--nx-muted)]">Noch keine Einträge.</div>
+                    <div class="text-sm text-[color:var(--nx-muted)]">{{ $stats['total'] }} im Team. Wähle links über die Perspektive einen Betrieb — oder öffne die Patientenliste.</div>
                 </div>
             </div>
         </x-ui-page-sidebar>
