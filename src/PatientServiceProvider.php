@@ -34,6 +34,7 @@ class PatientServiceProvider extends ServiceProvider
             PlatformCore::registerModule([
                 'key'        => 'patient',
                 'title'      => 'Patienten',
+                'group'      => 'clinical',
                 'routing'    => config('patient.routing'),
                 'guard'      => config('patient.guard'),
                 'navigation' => config('patient.navigation'),
